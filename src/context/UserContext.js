@@ -1,78 +1,59 @@
 import { createContext, useEffect, useState } from "react";
-import { helpHttp } from "../helpers/helpHttp";
+
 
 const UserContext = createContext();
 
-const UserProvider = ({ children }) => {
-  const [dbU, setDbU] = useState(null);
-  const [actualU, setActualU] = useState(5);
-  const [dataToEditU, setDataToEditU] = useState(null);
-  const [errorU, setErrorU] = useState(null);
-  const [loadingU, setLoadingU] = useState(false);
+const initialDb = [
+  {
+    nombre: "whilmis",
+    apellido: "Perez",
+    gmail: "whilmis21@gmail.com",
+    admin: true,
+    contrasena:"1234", 
+    id:11
+},
+{
+  nombre: "paco",
+  apellido: "Mendez",
+  gmail: "Mendez@gmail.com",
+  contrasena:"1234", 
+  id:55
+},
+  
+];
 
-  let api = helpHttp();
-  let url = "http://localhost:5000/users";
+
+
+const UserProvider = ({ children }) => {
+  const [dbU, setDbU] = useState(initialDb);
+  const [dataToEditU, setDataToEditU] = useState(null);
+
+ 
+  /*useEffect(() => {
+    window.localStorage.setItem("db", JSON.stringify(db));
+    window.localStorage.setItem("db", JSON.stringify(db));
+  }, [db]);
 
   useEffect(() => {
-    setLoadingU(true);
-    helpHttp()
-      .get(url)
-      .then((res) => {
-        //console.log(res);
-        if (!res.err) {
-          setDbU(res);
-          setErrorU(null);
-        } else {
-          setDbU(null);
-          setErrorU(res);
-        }
-        setLoadingU(false);
-      });
-  }, [url]);
+    setDb(JSON.parse(window.localStorage.getItem("db")));
+  }, []);
 
-
- const actualisaActual = (data) =>
- {
-  setActualU(data);
- }
+ */
 
   const createDataU = (data) => {
     data.id = Date.now();
     //console.log(data);
-
-    let options = {
-      body: data,
-      headers: { "content-type": "application/json" },
-    };
-
-    api.post(url, options).then((res) => {
-      //console.log(res);
-      if (!res.err) {
-        setDbU([...dbU, res]);
-      } else {
-        setErrorU(res);
-      }
-    });
+    setDbU([...dbU, data]);
+    
+   
+    
   };
 
   const updateDataU = (data) => {
-    let endpoint = `${url}/${data.id}`;
-    //console.log(endpoint);
-
-    let options = {
-      body: data,
-      headers: { "content-type": "application/json" },
-    };
-
-    api.put(endpoint, options).then((res) => {
-      //console.log(res);
-      if (!res.err) {
-        let newData = dbU.map((el) => (el.id === data.id ? data : el));
-        setDbU(newData);
-      } else {
-        setErrorU(res);
-      }
-    });
+    let newData = dbU.map((el) => (el.id === data.id ? data : el));
+    setDbU(newData);
+   
+    
   };
 
   const deleteDataU = (id) => {
@@ -81,20 +62,9 @@ const UserProvider = ({ children }) => {
     );
 
     if (isDelete) {
-      let endpoint = `${url}/${id}`;
-      let options = {
-        headers: { "content-type": "application/json" },
-      };
-
-      api.del(endpoint, options).then((res) => {
-        //console.log(res);
-        if (!res.err) {
-          let newData = dbU.filter((el) => el.id !== id);
-          setDbU(newData);
-        } else {
-          setErrorU(res);
-        }
-      });
+      let newData = dbU.filter((el) => el.id !== id);
+      setDbU(newData);
+    
     } else {
       return;
     }
@@ -102,16 +72,11 @@ const UserProvider = ({ children }) => {
 
   const data = {
     dbU,
-    errorU,
-    loadingU,
     createDataU,
     dataToEditU,
     setDataToEditU,
     updateDataU,
     deleteDataU,
-    setActualU,
-    actualU,
-    actualisaActual
   };
 
   return <UserContext.Provider value={data}>{children}</UserContext.Provider>;

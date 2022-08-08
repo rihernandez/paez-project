@@ -4,7 +4,8 @@ import CrudTableRow from "./CrudTableRow";
 import"./CrudTable.css"
 
 const CrudTable = () => {
-  const { db: data } = useContext(CrudContext);
+  let { db: data } = useContext(CrudContext);
+  
 
   return (
     <div>

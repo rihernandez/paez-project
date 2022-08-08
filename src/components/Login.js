@@ -21,19 +21,11 @@ const Login = () =>
     const [form, setForm] = useState(initailForm);
 
     const handleSubmit = () =>{
-        data.forEach(element => {
-            if(element.gmail === form.gmail){
-                if(element.contrasena === form.contrasena){
-                    
-                    actualisaActual(element.id);
-                    alert(actualU);
-                     element.admin? navigate("administrador"): navigate("cliente");
+  
+          
+                   navigate("cliente");
                    
-                }
-
-            }
-            
-        });
+    
       
     }
 
